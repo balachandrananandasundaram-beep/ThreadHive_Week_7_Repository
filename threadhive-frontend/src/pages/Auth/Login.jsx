@@ -24,9 +24,35 @@ function Login() {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = async (e) => {
-    //Your Code Here
-  };
+  const { loginUser } = useAuth();
+
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  setLoading(true);
+  setError(null);
+  setInfo(null);
+
+  try {
+    // Call backend login API with the correct object
+    const response = await login(form);
+    console.log("LOGIN RESPONSE:", response);
+
+
+    // Extract token and user directly (no .data)
+    const { token, user } = response;
+
+    // Pass ONE object to loginUser
+    loginUser({ token, user });
+
+    // Redirect to home page
+    navigate("/");
+  } catch (err) {
+    setError(err.response?.data?.message || "Login failed. Please try again.");
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   return (
     <Container

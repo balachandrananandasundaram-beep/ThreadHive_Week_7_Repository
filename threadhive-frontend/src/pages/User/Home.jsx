@@ -3,27 +3,43 @@ import { fetchRecentThreads } from "../../services/threadService";
 import ThreadList from "../../components/ThreadList/ThreadList";
 import { Container, Card } from "react-bootstrap";
 import "./Home.css";
+import { useAuth } from "../../context/AuthContext";
+
 
 export default function Home() {
   const [threads, setThreads] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const { token } = useAuth();
 
-  useEffect(() => {
-    const loadThreads = async () => {
-      // Your Code Here
-    };
+ useEffect(() => {
+  if (!token) return; // wait until token is available
 
-    loadThreads();
-  }, []);
+  const loadThreads = async () => {
+    setLoading(true);
+    setError(null);
+
+    try {
+      const data = await fetchRecentThreads();
+      setThreads(data);
+    } catch (err) {
+      setError("Failed to load threads. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  loadThreads();
+}, [token]); // run when token changes
+
 
   const handleVoteUpdate = (threadId, newVoteCount) => {
     setThreads(
       threads.map((thread) =>
         thread._id === threadId
           ? { ...thread, voteCount: newVoteCount }
-          : thread,
-      ),
+          : thread
+      )
     );
   };
 
@@ -60,3 +76,4 @@ export default function Home() {
     </div>
   );
 }
+

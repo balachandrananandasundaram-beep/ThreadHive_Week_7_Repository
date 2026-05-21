@@ -11,22 +11,47 @@ import "./App.css";
 
 function App() {
   return (
-    <BrowserRouter>
-      <div className="app-layout">
-        <Header />
-        <div className="app-container">
-          <main className="main-center-content">
-            <Routes>
-              // Your code here: define routes for Login, Register, Home and
-              ThreadPage
-              <Route path="*" element={<Navigate to="/home" replace />} />
-            </Routes>
-          </main>
+    <AuthProvider>
+      <BrowserRouter>
+        <div className="app-layout">
+          <Header />
+          <div className="app-container">
+            <main className="main-center-content">
+              <Routes>
+                {/* Public routes */}
+                <Route path="/login" element={<Login />} />
+                <Route path="/register" element={<Register />} />
+
+                {/* Protected routes */}
+                <Route
+                  path="/home"
+                  element={
+                    <PrivateRoute>
+                      <Home />
+                    </PrivateRoute>
+                  }
+                />
+
+                <Route
+                  path="/thread/:id"
+                  element={
+                    <PrivateRoute>
+                      <ThreadPage />
+                    </PrivateRoute>
+                  }
+                />
+
+                {/* Catch-all → redirect to /home */}
+                <Route path="*" element={<Navigate to="/home" replace />} />
+              </Routes>
+            </main>
+          </div>
+          <Footer />
         </div>
-        <Footer />
-      </div>
-    </BrowserRouter>
+      </BrowserRouter>
+    </AuthProvider>
   );
 }
 
 export default App;
+

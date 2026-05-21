@@ -18,14 +18,22 @@ function Register() {
     e.preventDefault();
     setLoading(true);
     setError(null);
-    
+
     try {
-      await register(form);
-      alert('Registration successful!');
-      navigate('/login');
+      const response = await register(form);
+
+      console.log("REGISTER SUCCESS:", response);
+
+      alert("Registration successful!");
+      navigate("/login");
     } catch (err) {
-      console.error('Registration error:', err);
-      const errorMessage = err.response?.data?.error || err.response?.data?.message || err.message || 'Registration failed. Please try again.';
+      console.error("REGISTER ERROR DETAILS:", err.response);
+
+      const errorMessage =
+        err?.response?.data?.message ||
+        err?.response?.data?.error ||
+        "Registration failed. Please try again.";
+
       setError(errorMessage);
     } finally {
       setLoading(false);
@@ -39,6 +47,7 @@ function Register() {
     >
       <Card className="auth-card shadow-lg border-0 rounded-4 p-4 p-md-5">
         <h2 className="auth-title">Register</h2>
+
         <Form onSubmit={handleSubmit}>
           <Form.Floating className="mb-4">
             <Form.Control
@@ -104,3 +113,4 @@ function Register() {
 }
 
 export default Register;
+

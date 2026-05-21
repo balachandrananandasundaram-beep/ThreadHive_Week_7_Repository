@@ -2,6 +2,7 @@
 
 import mongoose from "mongoose";
 import dotenv from "dotenv";
+import bcrypt from "bcrypt";
 import User from "../models/User.js";
 import Subreddit from "../models/Subreddit.js";
 import Thread from "../models/Thread.js";
@@ -10,7 +11,6 @@ import { users, subreddits, threads, comments } from "./seed-data.js";
 
 dotenv.config();
 
-// Connect to DB
 async function connectToDatabase() {
   try {
     await mongoose.connect(process.env.MONGODB_URI);
@@ -21,7 +21,6 @@ async function connectToDatabase() {
   }
 }
 
-// Clear collections
 async function clearDatabase() {
   try {
     await Promise.all([
@@ -37,7 +36,6 @@ async function clearDatabase() {
   }
 }
 
-// Insert users
 async function insertUsers() {
   try {
     const createdUsers = await User.insertMany(users);
@@ -49,7 +47,6 @@ async function insertUsers() {
   }
 }
 
-// Insert subreddits
 async function insertSubreddits() {
   try {
     const createdSubs = await Subreddit.insertMany(subreddits);
@@ -61,7 +58,6 @@ async function insertSubreddits() {
   }
 }
 
-// Create thread docs with proper subreddit references
 function prepareThreadDocs(subredditMap) {
   return threads.map((thread) => ({
     _id: thread._id,
@@ -76,15 +72,15 @@ function prepareThreadDocs(subredditMap) {
   }));
 }
 
-// Insert threads
 async function insertThreads(subredditDocs) {
   try {
     const subredditMap = Object.fromEntries(
-      subredditDocs.map((sub) => [sub.name, sub._id]),
+      subredditDocs.map((sub) => [sub.name, sub._id])
     );
-    const threadDocs = prepareThreadDocs(subredditMap);
 
+    const threadDocs = prepareThreadDocs(subredditMap);
     const createdThreads = await Thread.insertMany(threadDocs);
+
     console.log(`Inserted ${createdThreads.length} threads`);
     return createdThreads;
   } catch (error) {
@@ -93,10 +89,8 @@ async function insertThreads(subredditDocs) {
   }
 }
 
-// Insert comments
 async function insertComments() {
   try {
-    // Add voteCount = upvotedBy.length - downvotedBy.length
     const updatedComments = comments.map((comment) => ({
       ...comment,
       voteCount:
@@ -111,11 +105,15 @@ async function insertComments() {
   }
 }
 
-// Main seeding function
 async function seedDatabase() {
   try {
     await connectToDatabase();
     await clearDatabase();
+
+    // ⭐ HASH PASSWORDS BEFORE INSERTING USERS
+    for (const user of users) {
+      user.password = await bcrypt.hash(user.password, 10);
+    }
 
     const createdUsers = await insertUsers();
     const createdSubreddits = await insertSubreddits();
@@ -132,3 +130,4 @@ async function seedDatabase() {
 }
 
 seedDatabase();
+

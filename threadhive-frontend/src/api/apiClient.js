@@ -1,14 +1,13 @@
-const API_BASE_URL = "http://localhost:5000/api";
+const API_BASE_URL = "http://localhost:3000";
 // const API_BASE_URL = "https://w04-mls.onrender.com/api";
 
-// Utility function to make fetch requests
 export const fetchAPI = async (endpoint, options = {}) => {
   const url = `${API_BASE_URL}${endpoint}`;
   const token = localStorage.getItem("token");
 
   const headers = {
     "Content-Type": "application/json",
-    ...options.headers,
+    ...(options.headers || {}),
   };
 
   if (token) {
@@ -18,6 +17,7 @@ export const fetchAPI = async (endpoint, options = {}) => {
   const config = {
     ...options,
     headers,
+    cache: "no-store",
   };
 
   const response = await fetch(url, config);
@@ -36,3 +36,4 @@ export const fetchAPI = async (endpoint, options = {}) => {
 };
 
 export default fetchAPI;
+

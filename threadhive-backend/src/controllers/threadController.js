@@ -39,7 +39,8 @@ export const createThread = async (req, res) => {
   const populatedThread = await createNewThread(
     title,
     content,
-    author,
+//    author,
+    req.user.userId,
     subreddit,
   );
   res.status(201).json({

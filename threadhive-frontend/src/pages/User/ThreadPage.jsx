@@ -10,7 +10,7 @@ import { Container, Card } from "react-bootstrap";
 import './ThreadPage.css';
 
 export default function ThreadPage() {
-  const { threadId } = useParams();
+  const { id } = useParams();   // route param FIXED
   const navigate = useNavigate();
 
   const [commentText, setCommentText] = useState('');
@@ -21,37 +21,43 @@ export default function ThreadPage() {
 
   useEffect(() => {
     const loadThreadData = async () => {
-      if (!threadId) return;
-      
+      if (!id) return;
+
       setThreadLoading(true);
       setThreadError(null);
-      
+
       try {
-        // Fetch thread and comments in parallel
         const [threadData, commentsData] = await Promise.all([
-          fetchThreadById(threadId),
-          fetchCommentsForThread(threadId)
+          fetchThreadById(id),
+          fetchCommentsForThread(id)
         ]);
-        
+
         setThread(threadData);
         setThreadComments(commentsData || []);
       } catch (err) {
-        setThreadError(err.response?.data?.message || err.response?.data?.error || err.message || 'Failed to load thread');
+        setThreadError(
+          err.response?.data?.message ||
+          err.response?.data?.error ||
+          err.message ||
+          'Failed to load thread'
+        );
       } finally {
         setThreadLoading(false);
       }
     };
-    
+
     loadThreadData();
-  }, [threadId]);
+  }, [id]);
 
   const handlePostComment = async () => {
     if (!commentText.trim()) return;
 
     try {
-      const newComment = await postComment({ threadId, content: commentText });
-      
-      // Add the new comment to the list
+      const newComment = await postComment({
+        threadId: id,
+        content: commentText
+      });
+
       setThreadComments([...threadComments, newComment]);
       setCommentText('');
     } catch (err) {
@@ -75,20 +81,21 @@ export default function ThreadPage() {
 
   return (
     <Container className="thread-container">
-      {/* Thread Card */}
       <div className="mb-4">
-        <ThreadCard thread={thread} goBack={() => navigate(-1)} onVoteUpdate={handleThreadVoteUpdate} />
+        <ThreadCard
+          thread={thread}
+          goBack={() => navigate(-1)}
+          onVoteUpdate={handleThreadVoteUpdate}
+        />
       </div>
 
-      {/* Post Comment Input */}
-      <CommentForm 
+      <CommentForm
         commentText={commentText}
         onCommentChange={(e) => setCommentText(e.target.value)}
         onPostComment={handlePostComment}
         disabled={!commentText.trim()}
       />
 
-      {/* Comments Section */}
       <section>
         <div className="d-flex align-items-center justify-content-between mb-3">
           <h3 className="comments-header-title">💬 Comments</h3>

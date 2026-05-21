@@ -3,39 +3,39 @@
 
 // Authentication API Endpoints
 export const AUTH_API = {
-  LOGIN: '/auth/login',
-  REGISTER: '/auth/register',
+  LOGIN: '/api/auth/login',
+  REGISTER: '/api/auth/register',
 };
 
 // Thread API Endpoints
 export const THREAD_API = {
-  GET_ALL: '/threads',
-  GET_BY_ID: (id) => `/threads/${id}`,
-  CREATE: '/threads',
-  UPVOTE: (id) => `/threads/${id}/upvote`,
-  DOWNVOTE: (id) => `/threads/${id}/downvote`,
+  GET_ALL: '/api/threads',
+  GET_BY_ID: (id) => `/api/threads/${id}`,
+  CREATE: '/api/threads',
+  UPVOTE: (id) => `/api/threads/${id}/upvote`,
+  DOWNVOTE: (id) => `/api/threads/${id}/downvote`,
 };
 
 // Comment API Endpoints
 export const COMMENT_API = {
-  GET_BY_THREAD: (threadId) => `/comments/thread/${threadId}`,
-  CREATE: '/comments',
-  UPVOTE: (id) => `/comments/${id}/upvote`,
-  DOWNVOTE: (id) => `/comments/${id}/downvote`,
+  GET_BY_THREAD: (threadId) => `/api/comments/thread/${threadId}`,
+  CREATE: '/api/comments',
+  UPVOTE: (id) => `/api/comments/${id}/upvote`,
+  DOWNVOTE: (id) => `/api/comments/${id}/downvote`,
 };
 
 // Subreddit API Endpoints
 export const SUBREDDIT_API = {
-  GET_ALL: '/subreddits',
-  GET_BY_ID: (id) => `/subreddits/${id}`,
-  GET_WITH_THREADS: (id) => `/subreddits/${id}/threads`,
-  CREATE: '/subreddits',
+  GET_ALL: '/api/subreddits',
+  GET_BY_ID: (id) => `/api/subreddits/${id}`,
+  GET_WITH_THREADS: (id) => `/api/subreddits/${id}/threads`,
+  CREATE: '/api/subreddits',
 };
 
 // User API Endpoints
 export const USER_API = {
-  GET_BY_ID: (id) => `/users/${id}`,
-  GET_PROFILE: '/users/profile',
+  GET_BY_ID: (id) => `/api/users/${id}`,
+  GET_PROFILE: '/api/users/profile',
 };
 
 export default {
