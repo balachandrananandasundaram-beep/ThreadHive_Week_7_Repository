@@ -1,13 +1,16 @@
 import { Navbar, Container, Button } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../../context/AuthContext";
+import { useSelector, useDispatch } from "react-redux";
+import { logout } from "../../store/authSlice";
 import "./Header.css";
 
 function Header() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
-  // Read token, user, and logout from AuthContext
-  const { token, user, logout } = useAuth();
+  // Read token and user from Redux store
+  const token = useSelector((state) => state.auth.token);
+  const user = useSelector((state) => state.auth.user);
 
   const handleLogin = () => {
     navigate("/login");
@@ -18,7 +21,7 @@ function Header() {
   };
 
   const handleLogout = () => {
-    logout();        // clear token + user
+    dispatch(logout());
     navigate("/login");
   };
 

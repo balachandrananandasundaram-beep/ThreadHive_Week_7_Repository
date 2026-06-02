@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import { fetchRecentThreads } from "../../services/threadService";
 import ThreadList from "../../components/ThreadList/ThreadList";
 import CreateThreadForm from "../../components/Forms/CreateThreadForm";
 import { Container, Card } from "react-bootstrap";
 import "./Home.css";
-import { useAuth } from "../../context/AuthContext";
 
 
 export default function Home() {
@@ -12,7 +12,7 @@ export default function Home() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [showForm, setShowForm] = useState(false);
-  const { token } = useAuth();
+  const token = useSelector((state) => state.auth.token);
 
  useEffect(() => {
   if (!token) return; // wait until token is available
@@ -24,7 +24,7 @@ export default function Home() {
     try {
       const data = await fetchRecentThreads();
       setThreads(data);
-    } catch (err) {
+    } catch {
       setError("Failed to load threads. Please try again.");
     } finally {
       setLoading(false);
