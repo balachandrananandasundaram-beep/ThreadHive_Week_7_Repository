@@ -1,39 +1,38 @@
+import axios from "axios";
+
 const API_BASE_URL = "http://localhost:3000";
 // const API_BASE_URL = "https://w04-mls.onrender.com/api";
 
-export const fetchAPI = async (endpoint, options = {}) => {
-  const url = `${API_BASE_URL}${endpoint}`;
-  const token = localStorage.getItem("token");
-
-  const headers = {
+const apiClient = axios.create({
+  baseURL: API_BASE_URL,
+  headers: {
     "Content-Type": "application/json",
-    ...(options.headers || {}),
-  };
+  },
+});
 
+// Request interceptor — attach auth token from localStorage
+apiClient.interceptors.request.use((config) => {
+  const token = localStorage.getItem("token");
   if (token) {
-    headers.Authorization = `Bearer ${token}`;
+    config.headers.Authorization = "Bearer " + token;
   }
+  return config;
+});
 
-  const config = {
-    ...options,
+// Response interceptor — unwrap the axios envelope so callers get the HTTP body
+apiClient.interceptors.response.use(
+  (response) => response.data,
+  (error) => Promise.reject(error)
+);
+
+export const fetchAPI = (endpoint, options = {}) => {
+  const { method = "GET", body, headers } = options;
+  return apiClient.request({
+    url: endpoint,
+    method,
+    data: body ? (typeof body === "string" ? JSON.parse(body) : body) : undefined,
     headers,
-    cache: "no-store",
-  };
-
-  const response = await fetch(url, config);
-
-  if (!response.ok) {
-    const errorData = await response.json().catch(() => ({}));
-    const error = new Error(errorData.message || "API Error");
-    error.response = {
-      status: response.status,
-      data: errorData,
-    };
-    throw error;
-  }
-
-  return response.json();
+  });
 };
 
 export default fetchAPI;
-

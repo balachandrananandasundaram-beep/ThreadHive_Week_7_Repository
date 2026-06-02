@@ -1,8 +1,9 @@
 import { Container, Card, Form, Button, Spinner } from "react-bootstrap";
-import { useState, useRef, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
+import { useDispatch } from "react-redux";
 import { login } from "../../services/authService";
-import { useAuth } from "../../context/AuthContext";
+import { loginUser } from "../../store/authSlice";
 import "./Auth.css";
 
 function Login() {
@@ -24,7 +25,7 @@ function Login() {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const { loginUser } = useAuth();
+  const dispatch = useDispatch();
 
 const handleSubmit = async (e) => {
   e.preventDefault();
@@ -42,7 +43,7 @@ const handleSubmit = async (e) => {
     const { token, user } = response;
 
     // Pass ONE object to loginUser
-    loginUser({ token, user });
+    dispatch(loginUser({ token, user }));
 
     // Redirect to home page
     navigate("/");

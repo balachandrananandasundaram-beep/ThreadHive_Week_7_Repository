@@ -6,50 +6,47 @@ import Register from "./pages/Auth/Register";
 import Home from "./pages/User/Home";
 import ThreadPage from "./pages/User/ThreadPage";
 import PrivateRoute from "./components/PrivateRoute/PrivateRoute";
-import { AuthProvider } from "./context/AuthContext";
 import "./App.css";
 
 function App() {
   return (
-    <AuthProvider>
-      <BrowserRouter>
-        <div className="app-layout">
-          <Header />
-          <div className="app-container">
-            <main className="main-center-content">
-              <Routes>
-                {/* Public routes */}
-                <Route path="/login" element={<Login />} />
-                <Route path="/register" element={<Register />} />
+    <BrowserRouter>
+      <div className="app-layout">
+        <Header />
+        <div className="app-container">
+          <main className="main-center-content">
+            <Routes>
+              {/* Public routes */}
+              <Route path="/login" element={<Login />} />
+              <Route path="/register" element={<Register />} />
 
-                {/* Protected routes */}
-                <Route
-                  path="/home"
-                  element={
-                    <PrivateRoute>
-                      <Home />
-                    </PrivateRoute>
-                  }
-                />
+              {/* Protected routes */}
+              <Route
+                path="/home"
+                element={
+                  <PrivateRoute>
+                    <Home />
+                  </PrivateRoute>
+                }
+              />
 
-                <Route
-                  path="/thread/:id"
-                  element={
-                    <PrivateRoute>
-                      <ThreadPage />
-                    </PrivateRoute>
-                  }
-                />
+              <Route
+                path="/thread/:id"
+                element={
+                  <PrivateRoute>
+                    <ThreadPage />
+                  </PrivateRoute>
+                }
+              />
 
-                {/* Catch-all → redirect to /home */}
-                <Route path="*" element={<Navigate to="/home" replace />} />
-              </Routes>
-            </main>
-          </div>
-          <Footer />
+              {/* Catch-all → redirect to /home */}
+              <Route path="*" element={<Navigate to="/home" replace />} />
+            </Routes>
+          </main>
         </div>
-      </BrowserRouter>
-    </AuthProvider>
+        <Footer />
+      </div>
+    </BrowserRouter>
   );
 }
 
